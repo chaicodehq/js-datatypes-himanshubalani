@@ -42,5 +42,20 @@
  *   // => "INVALID PASS"
  */
 export function generateLocalPass(passenger) {
-  // Your code here
+	let validTypes = ["first", "second"]
+	if (
+        !passenger || 
+        !passenger.name || !passenger.from || !passenger.to || !passenger.classType ||
+        !validTypes.includes(passenger.classType.toLowerCase())
+    ) {
+      return "INVALID PASS";
+    }
+	
+	let fromt = passenger.from[0].toUpperCase() + passenger.from.toLowerCase().slice(1)
+	let tot = passenger.to[0].toUpperCase() + passenger.to.toLowerCase().slice(1)
+	let name = passenger.name.toUpperCase()
+	let classn = passenger.classType.toUpperCase()
+	let Passid = classn[0] + fromt.toUpperCase().slice(0, 3) + tot.toUpperCase().slice(0, 3)
+	
+	return `MUMBAI LOCAL PASS\n---\nName: ${name}\nFrom: ${fromt}\nTo: ${tot}\nClass: ${classn}\nPass ID: ${Passid}`
 }
