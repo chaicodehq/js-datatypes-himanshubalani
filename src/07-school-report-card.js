@@ -41,5 +41,40 @@
  *   // => { name: "Priya", totalMarks: 63, percentage: 31.5, grade: "F", ... }
  */
 export function generateReportCard(student) {
-  // Your code here
+
+  if (!student || student === null) return null
+     let namex = student.name
+     let marksx = student.marks
+
+   if (!namex || typeof namex !== "string" || namex === "" || !marksx || Object.keys(marksx).length === 0) return null
+
+  
+   let marksarr = Object.values(marksx)
+
+   if (marksarr.find(n => n === null || n > 100 || n < 0 || typeof n !== "number") ) return null
+   let totalMarksx = marksarr.reduce((acc, curr) => acc + curr, 0)
+   let numSubjects = marksarr.length
+   let perx = parseFloat(((totalMarksx / (numSubjects * 100)) * 100).toFixed(2))
+   let gradex = ""
+   if (perx >= 90) {gradex = "A+"} 
+   else if (perx >= 80) {gradex = "A"} 
+   else if (perx >= 70) {gradex = "B"} 
+   else if (perx >= 60) {gradex = "C"} 
+   else if (perx >= 40) {gradex = "D"}
+   else if (perx < 40) {gradex = "F"}
+
+   let maxmarks = Math.max(...marksarr)
+   let minmarks = Math.min(...marksarr)
+   let highestSubjectx = Object.entries(marksx).filter(([name, mark]) => mark === maxmarks).map(([name, mark]) => name)[0];
+   let lowestSubjectx = Object.entries(marksx).filter(([name, mark]) => mark === minmarks).map(([name, mark]) => name)[0];
+
+    let passedSubjectsx = Object.entries(marksx).filter(([name, mark]) => mark >= 40).map(([name]) => name)
+   let failedSubjectsx = Object.entries(marksx).filter(([name, mark]) => mark < 40).map(([name]) => name)
+
+   let subjectCountx = Object.keys(marksx).length
+
+  return { name: namex, totalMarks: totalMarksx, percentage: perx, grade: gradex, highestSubject: highestSubjectx, lowestSubject: lowestSubjectx,
+         passedSubjects: passedSubjectsx, failedSubjects: failedSubjectsx,
+         subjectCount: subjectCountx }
+
 }
