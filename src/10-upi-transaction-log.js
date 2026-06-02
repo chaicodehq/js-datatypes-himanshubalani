@@ -47,5 +47,76 @@
  *   //      frequentContact: "Swiggy", allAbove100: false, hasLargeTransaction: true }
  */
 export function analyzeUPITransactions(transactions) {
-  // Your code here
+  if (!Array.isArray(transactions)) return null
+
+  let vtransactions = transactions
+  .filter( transaction => (transaction.amount > 0 && (transaction.type.toLowerCase() === "credit" || transaction.type.toLowerCase() === "debit" ))
+  )
+  if (vtransactions.length === 0) return null
+
+  
+  let credittrans = Object.entries(vtransactions)
+  .filter(([key, value]) => value.type === 'credit')
+  .map(([key, value]) => ({
+    transactionId: key,
+    ...value
+  }));
+  
+  
+  let totalCreditx = vtransactions
+  .filter(t => t.type === "credit")
+  .reduce((acc, curr) => acc + curr.amount, 0);
+
+let totalDebitx = vtransactions
+  .filter(t => t.type === "debit")
+  .reduce((acc, curr) => acc + curr.amount, 0);
+
+  let netBalancex = totalCreditx - totalDebitx
+
+  let transactionCountx = vtransactions.length
+
+  let transum = totalCreditx + totalDebitx
+  let avgTransactionx = Math.round((transum / transactionCountx))
+
+  let highestTransactionx = vtransactions.reduce((max, curr) => curr.amount > max.amount ? curr : max)
+
+  let categoryBreakdownx = vtransactions.reduce(
+    (acc, curr) => {
+      const {category, amount} = curr
+      if (!acc[category]) { acc[category] = 0}
+
+      acc[category] += amount;
+
+      return acc
+    }, {});
+
+    let frequentContactlist = vtransactions.reduce(
+      (acc, curr) => {
+        const {to} = curr
+        if (!acc[to]) { acc[to] = 0}
+
+        acc[to] += 1
+
+        return acc
+      }, {})
+
+    let frequentContactx = Object.entries(frequentContactlist).reduce((max, current) => current[1] > max[1] ? current : max)[0];
+
+    let allAbove100x = vtransactions.every( tran => tran.amount > 100)
+
+    let hasLargeTransactionx = vtransactions.some(tran => tran.amount >= 5000)
+
+
+  return {
+  totalCredit: totalCreditx,
+  totalDebit: totalDebitx,
+  netBalance: netBalancex,
+  transactionCount: transactionCountx,
+  avgTransaction: avgTransactionx,
+  highestTransaction: highestTransactionx,
+  categoryBreakdown: categoryBreakdownx,
+  frequentContact: frequentContactx,
+  allAbove100: allAbove100x,
+  hasLargeTransaction: hasLargeTransactionx
+}
 }
